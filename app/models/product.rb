@@ -1,5 +1,6 @@
 class Product < ApplicationRecord
   has_many_attached :images
+  has_many :cart_items, dependent: :destroy
   # validate :image_content_type
   # validate :image_size
 
