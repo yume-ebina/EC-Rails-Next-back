@@ -14,4 +14,8 @@ class Api::V1::UsersController < ApplicationController
     @user = User.find(1)
     render json: @user
   end
+
+  def set_demo_user
+    @user = current_user
+  end
 end
