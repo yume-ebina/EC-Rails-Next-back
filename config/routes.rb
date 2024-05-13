@@ -4,6 +4,13 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :products, only: [:index, :show]
+      resources :cart_items, only: %i[index create destroy] do
+        member do
+          put 'increase'
+          put 'decrease'
+        end
+      end
+      get 'users' => 'users#show'
     end
   end
 

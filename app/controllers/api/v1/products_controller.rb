@@ -19,6 +19,8 @@ class Api::V1::ProductsController < ApplicationController
     end
     res = @product.attributes.merge(images: images)
     render json: res
+
+    @cart_item = CartItem.new
   end
 
   private
