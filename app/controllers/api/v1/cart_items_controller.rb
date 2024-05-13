@@ -4,7 +4,7 @@ class Api::V1::CartItemsController < ApplicationController
   # before_action :set_cart_item, only: %i[increase decrease destroy]
   def index
     # @cart_items = current_user.cart_items
-    @cart_items = CartItem.all
+    @cart_items = Product.joins(:cart_items).select("cart_items.*,products.name, products.price")
     render json: @cart_items
   end
 
