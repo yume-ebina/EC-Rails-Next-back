@@ -1,21 +1,32 @@
 class Api::V1::UsersController < ApplicationController
-  # def create
-  #   # 条件に該当するデータがあればそれを返す。なければ新規作成
-  #   user = User.find_or_create_by(provider: params[:provider], uid: params[:uid], name: params[:name], email: params[:email])
-  #   if user
-  #     head :ok
-  #   else
-  #     render json: { error: "ログインに失敗しました" }, status: :unprocessable_entity
-  #   end
-  # rescue StandardError => e
-  #   render json: { error: e.message }, status: :internal_server_error
-  # end
-  def show
-    @user = User.find(1)
-    render json: @user
+  # skip_before_action :verify_authenticity_token
+  rescue_from StandardError, with: :handle_standard_error
+  def create
+    user = User.find_or_initialize_by(user_params.slice(:provider, :uid))
+    user.assign_attributes(user_params.except(:provider, :uid))
+
+    if user.save
+      render json: user, status: :ok
+    else
+      render json: { errors: user.errors.full_messages }, status: :bad_request
+    end
   end
 
-  def set_demo_user
-    @user = current_user
+  def index
+    users = User.all
+    render json: users
   end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:provider, :uid, :name, :avatar)
+  end
+
+  def handle_standard_error(e)
+    Rails.logger.error "Internal Server Error: #{e.message}"
+    e.backtrace.each { |line| Rails.logger.error line }
+    render json: { error: '内部サーバーエラーが発生しました。' }, status: :internal_server_error
+  end
+
 end

@@ -1,6 +1,9 @@
 class User < ApplicationRecord
   has_many :cart_items, dependent: :destroy
   has_many :orders, dependent: :destroy
+  has_one :profile
+
+  validates :uid, uniqueness: { scope: :provider }
 
   # def line_items_checkout
   #   cart_items.map do |cart_item|

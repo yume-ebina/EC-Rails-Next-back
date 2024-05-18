@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_13_032435) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_16_100238) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -90,14 +90,30 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_13_032435) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "profiles", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.string "postal_code"
+    t.string "address1"
+    t.string "address2"
+    t.string "address3"
+    t.string "tel"
+    t.boolean "unsubscribe_status", default: false
+    t.string "image"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_profiles_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "provider", null: false
     t.string "uid", null: false
     t.string "name", null: false
-    t.string "email"
     t.string "avatar"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -107,4 +123,5 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_13_032435) do
   add_foreign_key "order_products", "orders"
   add_foreign_key "order_products", "products"
   add_foreign_key "orders", "users"
+  add_foreign_key "profiles", "users"
 end
