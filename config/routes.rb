@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       #   resources :sessions, only: [:create]
       # end
       resources :orders, only: [:index, :create]
+      post 'orders/confirm', to: 'orders#confirm'
       resources :order_products, only: [:index, :create]
     end
   end
