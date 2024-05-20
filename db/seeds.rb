@@ -11,18 +11,6 @@ User.create!(
   name: "test",
   avatar: nil
 )
-Order.create!(
-  shipping_name: "hogehoge",
-  postal_code: "0000000",
-  address1: "hoge",
-  address2: "hoge",
-  address3: "hoge",
-  shipping_tel: 00000000000,
-  postage: 1000,
-  billing_amount: 1000,
-  status: 0,
-  user_id: 1,
-)
 
 Product.create(
   [

@@ -1,7 +1,10 @@
 class Api::V1::OrderProductsController < ApplicationController
   skip_before_action :verify_authenticity_token
   def index
-    @order_products = Product.joins(:order_products).select("order_products.*,products.name, products.price")
+    @order_products = []
+    Order.all.each do |order|
+      @order_products << order.order_products
+    end
     render json: @order_products
   end
 

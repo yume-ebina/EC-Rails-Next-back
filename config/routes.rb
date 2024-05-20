@@ -22,6 +22,7 @@ Rails.application.routes.draw do
       # end
       resources :orders, only: [:index, :create]
       post 'orders/confirm', to: 'orders#confirm'
+      get 'orders/determine', to: 'orders#determine'
       resources :order_products, only: [:index, :create]
     end
   end
