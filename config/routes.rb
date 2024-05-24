@@ -1,16 +1,29 @@
 Rails.application.routes.draw do
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 
+  root to: proc { [200, {}, ['Welcome to my API!']] }
   namespace :api do
     namespace :v1 do
+      resource :profiles, only: [:show, :update]
+      resources :users, only: [:index]
       resources :products, only: [:index, :show]
-      resources :cart_items, only: %i[index create destroy] do
-        member do
-          put 'increase'
-          put 'decrease'
+      resources :cart_items, only: [:index, :create, :destroy] do
+        collection do
+          delete 'destroy_all'
         end
+        # member do
+        #   put 'increase'
+        #   put 'decrease'
+        # end
       end
       get 'users' => 'users#show'
+      # namespace :checkout do
+      #   resources :sessions, only: [:create]
+      # end
+      resources :orders, only: [:index, :create]
+      post 'orders/confirm', to: 'orders#confirm'
+      get 'orders/determine', to: 'orders#determine'
+      resources :order_products, only: [:index, :create]
     end
   end
 

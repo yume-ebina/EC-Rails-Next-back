@@ -26,9 +26,15 @@ module App
     # 複数のロケールファイルが読み込まれるようpathを通す
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
 
+    config.session_store :cookie_store, key: '_interslice_session'
     config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Flash
-    config.middleware.use Rack::MethodOverride
     config.middleware.use ActionDispatch::Session::CookieStore, {:key=>"_app_session"}
+    config.middleware.use config.session_store, config.session_options
+    config.middleware.use ActionDispatch::Flash
+
+    # ログからavatarパラメータを除外
+    config.filter_parameters += [:avatar]
+
+    config.middleware.use Rack::MethodOverride
   end
 end

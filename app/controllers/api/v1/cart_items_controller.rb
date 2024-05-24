@@ -4,7 +4,7 @@ class Api::V1::CartItemsController < ApplicationController
   # before_action :set_cart_item, only: %i[increase decrease destroy]
   def index
     # @cart_items = current_user.cart_items
-    @cart_items = Product.joins(:cart_items).select("cart_items.*,products.name, products.price")
+    @cart_items = Product.joins(:cart_items).select("cart_items.*,products.id, products.name, products.price")
     render json: @cart_items
   end
 
@@ -28,15 +28,19 @@ class Api::V1::CartItemsController < ApplicationController
   #   redirect_to request.referer, notice: 'Successfully updated your cart'
   # end
 
-  # def destroy
-  #   @cart_item.destroy
-  #   redirect_to request.referer, notice: 'Successfully deleted one cart item'
-  # end
+  def destroy
+    @cart_item = CartItem.find(params[:id])
+    @cart_item.destroy
+  end
+
+  def destroy_all
+    CartItem.destroy_all
+  end
 
   private
 
   def cart_item_params
-    params.require(:cart_item).permit(:quantity, :user_id, :product_id, :grind)
+    params.require(:cart_item).permit(:quantity, :user_id, :product_id, :grind, :name)
   end
 
   # def set_cart_item
