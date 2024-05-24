@@ -31,6 +31,16 @@ module App
     config.middleware.use ActionDispatch::Session::CookieStore, {:key=>"_app_session"}
     config.middleware.use config.session_store, config.session_options
     config.middleware.use ActionDispatch::Flash
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins 'localhost:8000'
+        resource '*',
+                :headers => :any,
+                # この一文で、渡される、'access-token'、'uid'、'client'というheaders情報を用いてログイン状態を維持する。
+                :expose => ['access-token', 'expiry', 'token-type', 'uid', 'client'],
+                :methods => [:get, :post, :options, :delete, :put]
+      end
+    end
 
     # ログからavatarパラメータを除外
     config.filter_parameters += [:avatar]
