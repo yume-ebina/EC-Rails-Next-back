@@ -1,11 +1,16 @@
 Rails.application.routes.draw do
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
-
   root to: proc { [200, {}, ['Welcome to my API!']] }
   namespace :api do
     namespace :v1 do
+      mount_devise_token_auth_for 'User', at: 'auth', skip: [:omniauth_callbacks],controllers: {
+        registrations: 'api/v1/auth/registrations',
+      }
+
+      namespace :auth do
+        resources :sessions, only: [:index]
+      end
       resource :profiles, only: [:show, :update]
-      resources :users, only: [:index]
       resources :products, only: [:index, :show]
       resources :cart_items, only: [:index, :create, :destroy] do
         collection do
@@ -16,7 +21,7 @@ Rails.application.routes.draw do
         #   put 'decrease'
         # end
       end
-      get 'users' => 'users#show'
+      # get 'users' => 'users#show'
       # namespace :checkout do
       #   resources :sessions, only: [:create]
       # end
@@ -26,6 +31,6 @@ Rails.application.routes.draw do
       resources :order_products, only: [:index, :create]
     end
   end
-
-  post 'auth/:provider/callback', to: 'api/v1/users#create'
+  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
+  # post 'auth/:provider/callback', to: 'api/v1/users#create'
 end

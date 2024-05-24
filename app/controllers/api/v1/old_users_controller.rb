@@ -2,8 +2,9 @@ class Api::V1::UsersController < ApplicationController
   # skip_before_action :verify_authenticity_token
   rescue_from StandardError, with: :handle_standard_error
   def create
-    user = User.find_or_initialize_by(user_params.slice(:provider, :uid))
-    user.assign_attributes(user_params.except(:provider, :uid))
+    # user = User.find_or_initialize_by(user_params.slice(:provider, :uid))
+    # user.assign_attributes(user_params.except(:provider, :uid))
+    
 
     if user.save
       render json: user, status: :ok

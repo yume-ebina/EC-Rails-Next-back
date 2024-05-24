@@ -1,10 +1,13 @@
 class Api::V1::CartItemsController < ApplicationController
-  # before_action :authenticate_user!
-  skip_before_action :verify_authenticity_token
-  # before_action :set_cart_item, only: %i[increase decrease destroy]
+  before_action :authenticate_api_v1_user!, except: [:new, :create]
   def index
     # @cart_items = current_user.cart_items
-    @cart_items = Product.joins(:cart_items).select("cart_items.*,products.id, products.name, products.price")
+    # @cart_items = Product.joins(:cart_items).select("cart_items.*,products.id, products.name, products.price")
+    # @cart_items = CartItem.where(user_id: current_api_v1_user.id)
+    # @cart_items = Product.includes(:cart_items).where(cart_items: {user_id: current_api_v1_user.id})
+    @cart_items = CartItem.joins(:product)
+                          .select('products.name', 'products.price', 'products.id', 'cart_items.grind','cart_items.quantity', 'cart_items.product_id')
+
     render json: @cart_items
   end
 
@@ -34,7 +37,8 @@ class Api::V1::CartItemsController < ApplicationController
   end
 
   def destroy_all
-    CartItem.destroy_all
+    @cart_items = CartItem.where(user_id: current_api_v1_user.id)
+    @cart_items.destroy_all
   end
 
   private

@@ -1,8 +1,9 @@
 class Api::V1::OrdersController < ApplicationController
-  skip_before_action :verify_authenticity_token
+  before_action :authenticate_api_v1_user!, except: [:new, :create, :confirm]
+
   def index
     @orders = []
-    Order.all.each do |order|
+    Order.where(user_id: current_api_v1_user.id).order(id: "DESC").each do |order|
       @order_products = Hash.new
       @order_products['order_products'] = order.order_products
       @order_products['created_at'] = order.created_at
@@ -14,8 +15,7 @@ class Api::V1::OrdersController < ApplicationController
 
   def confirm
     @order = Order.new
-    # CartItem.where(user_id: current_user.id).each do |item|
-    CartItem.all.each do |item|
+    CartItem.where(user_id: current_api_v1_user.id).each do |item|
       @order.order_products.new(product_id: item.product_id)
     end
     render json: @order

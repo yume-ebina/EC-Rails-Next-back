@@ -1,8 +1,10 @@
 class Api::V1::OrderProductsController < ApplicationController
-  skip_before_action :verify_authenticity_token
+  # skip_before_action :verify_authenticity_token
+  before_action :authenticate_api_v1_user!, except: [:new, :create]
+
   def index
     @order_products = []
-    Order.all.each do |order|
+    Order.where(user_id: current_api_v1_user.id).each do |order|
       @order_products << order.order_products
     end
     render json: @order_products
